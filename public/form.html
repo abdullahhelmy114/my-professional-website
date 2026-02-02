@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <title>إكمال البيانات | منظومة التدريس</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +15,11 @@
             --bg-dark: #0f172a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Cairo', sans-serif;
@@ -19,7 +27,8 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* للسماح بالتمرير */
+            align-items: flex-start;
+            /* للسماح بالتمرير */
             padding: 50px 20px;
             color: white;
             position: relative;
@@ -27,79 +36,234 @@
 
         /* الخلفية المتحركة */
         .bg-shapes {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; filter: blur(80px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(80px);
         }
-        .shape { position: absolute; border-radius: 50%; opacity: 0.4; animation: move 20s infinite alternate; }
-        .shape-1 { width: 500px; height: 500px; background: var(--student-color); top: -10%; left: -10%; }
-        .shape-2 { width: 400px; height: 400px; background: var(--teacher-color); bottom: -10%; right: -5%; }
 
-        @keyframes move { from { transform: translate(0,0); } to { transform: translate(100px, 100px); } }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: move 20s infinite alternate;
+        }
+
+        .shape-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--student-color);
+            top: -10%;
+            left: -10%;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--teacher-color);
+            bottom: -10%;
+            right: -5%;
+        }
+
+        @keyframes move {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(100px, 100px);
+            }
+        }
 
         /* كارت الفورم الزجاجي */
+        /* تعديل عرض الكارت ليكون مرناً */
         .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            width: 850px; /* عرض أكبر ليتناسب مع الخانات */
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            overflow: hidden;
+            width: 95%;
+            max-width: 850px;
+            margin: 20px auto;
+        }
+
+        /* التحكم في الجداول (الشبكة) */
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* خانتين بجانب بعض في الشاشات الكبيرة */
+            gap: 20px;
+        }
+
+        /* --- إضافة Media Query للموبايل --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            /* تحويل الخانتين لخانة واحدة فوق بعض */
+            .grid-inputs {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .role-btn {
+                padding: 15px 10px;
+                font-size: 16px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .glass-card {
+                border-radius: 20px;
+            }
         }
 
         /* زر التبديل العلوي */
-        .role-selector { display: flex; background: rgba(0, 0, 0, 0.3); padding: 8px; }
+        .role-selector {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+        }
+
         .role-btn {
-            flex: 1; padding: 18px; border: none; background: transparent;
-            color: #94a3b8; font-family: 'Cairo', sans-serif; font-size: 18px;
-            font-weight: 800; cursor: pointer; transition: 0.4s; border-radius: 15px;
+            flex: 1;
+            padding: 18px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-family: 'Cairo', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.4s;
+            border-radius: 15px;
         }
-        .role-btn.active.student { background: var(--student-color); color: white; }
-        .role-btn.active.teacher { background: var(--teacher-color); color: white; }
 
-        .form-container { padding: 40px; }
+        .role-btn.active.student {
+            background: var(--student-color);
+            color: white;
+        }
+
+        .role-btn.active.teacher {
+            background: var(--teacher-color);
+            color: white;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
         .section-title {
-            font-size: 18px; font-weight: 700; color: #94a3b8;
-            margin: 25px 0 15px 0; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 18px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin: 25px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* نظام الشبكة (خانتين في الصف) */
-        .grid-inputs {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+
+        .input-group {
+            text-align: right;
         }
 
-        .input-group { text-align: right; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
-        input, select, textarea {
-            width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
-            color: white; font-family: 'Cairo', sans-serif; outline: none; transition: 0.3s;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #cbd5e1;
         }
-        input:focus { border-color: var(--student-color); background: rgba(255,255,255,0.1); }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--student-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
 
         /* زر النوع (ذكر/أنثى) المرن */
+        /* 1. الكود الأساسي (يُطبق على كل الشاشات) */
         .gender-container {
-            display: flex; gap: 10px; background: rgba(255,255,255,0.05);
-            padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .gender-btn {
-            flex: 1; padding: 8px; border: none; border-radius: 8px;
-            background: transparent; color: #94a3b8; cursor: pointer;
-            font-family: 'Cairo'; font-weight: 600; transition: 0.3s;
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: 600;
+            transition: 0.3s;
         }
-        .gender-btn.active { background: #6366f1; color: white; }
+
+        .gender-btn.active {
+            background: #6366f1;
+            color: white;
+        }
+
+        /* 2. كود التعديل للموبايل (يُوضع بالأسفل دائماً) */
+        @media (max-width: 480px) {
+            .gender-btn {
+                padding: 12px 5px;
+                /* تكبير المساحة للضغط بالإصبع */
+                font-size: 14px;
+                /* تصغير الخط ليناسب الشاشة الضيقة */
+            }
+        }
 
         .submit-btn {
-            width: 100%; padding: 18px; background: var(--student-color);
-            color: white; border: none; border-radius: 15px; font-size: 18px;
-            font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 40px;
+            width: 100%;
+            padding: 18px;
+            background: var(--student-color);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 40px;
         }
-        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
 
         /* لإخفاء حقول المعلم عند اختيار طالب */
-        .teacher-only { display: none; }
+        .teacher-only {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="bg-shapes">
@@ -109,8 +273,10 @@
 
     <div class="glass-card">
         <div class="role-selector">
-            <button type="button" class="role-btn active student" id="studentBtn" onclick="selectRole('student')">👨‍🎓 طالب</button>
-            <button type="button" class="role-btn teacher" id="teacherBtn" onclick="selectRole('teacher')">👨‍🏫 معلم</button>
+            <button type="button" class="role-btn active student" id="studentBtn" onclick="selectRole('student')">👨‍🎓
+                طالب</button>
+            <button type="button" class="role-btn teacher" id="teacherBtn" onclick="selectRole('teacher')">👨‍🏫
+                معلم</button>
         </div>
 
         <div class="form-container">
@@ -132,8 +298,10 @@
                     <div class="input-group">
                         <label>النوع *</label>
                         <div class="gender-container">
-                            <button type="button" class="gender-btn active" id="maleBtn" onclick="setGender('ذكر')">ذكر</button>
-                            <button type="button" class="gender-btn" id="femaleBtn" onclick="setGender('أنثى')">أنثى</button>
+                            <button type="button" class="gender-btn active" id="maleBtn"
+                                onclick="setGender('ذكر')">ذكر</button>
+                            <button type="button" class="gender-btn" id="femaleBtn"
+                                onclick="setGender('أنثى')">أنثى</button>
                         </div>
                     </div>
                     <div class="input-group">
@@ -182,7 +350,7 @@
                         <label>لغات أخرى تجيدها (اختياري)</label>
                         <input type="text" name="otherLanguages">
                     </div>
-                    
+
                     <!-- حقول خاصة بالمعلم فقط -->
                     <div class="input-group teacher-only">
                         <label>التخصص / اللغة التي ترغب في تدريسها *</label>
@@ -190,7 +358,8 @@
                     </div>
                     <div class="input-group teacher-only">
                         <label>الفئات التي تقوم بتدريسها *</label>
-                        <input type="text" name="categories" id="categoriesInput" placeholder="مثلاً: أطفال، كبار، مبتدئين">
+                        <input type="text" name="categories" id="categoriesInput"
+                            placeholder="مثلاً: أطفال، كبار، مبتدئين">
                     </div>
 
                     <div class="input-group">
@@ -212,7 +381,7 @@
             const submitBtn = document.getElementById('submitBtn');
             const hoursLabel = document.getElementById('hoursLabel');
             const teacherFields = document.querySelectorAll('.teacher-only');
-            
+
             const specialtyInput = document.getElementById('specialtyInput');
             const categoriesInput = document.getElementById('categoriesInput');
 
@@ -244,4 +413,5 @@
         }
     </script>
 </body>
+
 </html>

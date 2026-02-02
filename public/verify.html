@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تأكيد الحساب</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #10b981; /* لون أخضر للتأكيد */
+            --primary: #10b981;
+            /* لون أخضر للتأكيد */
             --secondary: #3b82f6;
             --bg-dark: #0f172a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Cairo', sans-serif;
@@ -27,7 +34,10 @@
         /* --- الأشكال المتحركة (نفس نمط صفحة التسجيل) --- */
         .bg-shapes {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
             filter: blur(80px);
         }
@@ -39,27 +49,53 @@
             animation: move 25s infinite alternate;
         }
 
-        .shape-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; right: -10%; }
-        .shape-2 { width: 350px; height: 350px; background: var(--secondary); bottom: -10%; left: -5%; animation-delay: -7s; }
-
-        @keyframes move {
-            from { transform: translate(0, 0); }
-            to { transform: translate(-100px, 100px); }
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -10%;
+            right: -10%;
         }
 
-        /* --- كارت الزجاج (Glassmorphism) --- */
+        .shape-2 {
+            width: 350px;
+            height: 350px;
+            background: var(--secondary);
+            bottom: -10%;
+            left: -5%;
+            animation-delay: -7s;
+        }
+
+        @keyframes move {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(-100px, 100px);
+            }
+        }
+
+        /* --- كارت الزجاج الاحترافي والمتجاوب (Glassmorphism) --- */
         .glass-card {
+            /* هذه الخصائص هي المسؤولة عن شكل الزجاج (لا تحذفها) */
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 40px;
-            width: 420px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             color: white;
             text-align: center;
             z-index: 10;
+
+            /* هذه هي التعديلات الجديدة التي تجعله يعمل بشكل رائع على الموبايل */
+            width: 90%;
+            /* سيأخذ 90% من عرض الشاشة على الموبايل */
+            max-width: 450px;
+            /* لن يزيد عن 450 بكسل على الشاشات الكبيرة (لابتوب) */
+            padding: 30px 20px;
+            /* تقليل الحواف لتوفير مساحة للكتابة */
         }
 
         .icon-box {
@@ -74,11 +110,22 @@
             color: var(--primary);
         }
 
-        h2 { font-weight: 800; margin-bottom: 10px; font-size: 26px; }
-        
-        p { color: #94a3b8; margin-bottom: 30px; font-size: 15px; line-height: 1.6; }
+        h2 {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
 
-        .input-group { margin-bottom: 25px; }
+        p {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
 
         .input-group input {
             width: 100%;
@@ -90,7 +137,8 @@
             font-family: 'Cairo', sans-serif;
             font-size: 22px;
             text-align: center;
-            letter-spacing: 10px; /* تباعد الأرقام ليعطي شكلاً احترافياً */
+            letter-spacing: 10px;
+            /* تباعد الأرقام ليعطي شكلاً احترافياً */
             outline: none;
             transition: 0.3s;
         }
@@ -128,10 +176,12 @@
             transition: 0.3s;
         }
 
-        .resend-link:hover { color: white; }
-
+        .resend-link:hover {
+            color: white;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="bg-shapes">
@@ -156,4 +206,5 @@
     </div>
 
 </body>
+
 </html>

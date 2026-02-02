@@ -63,26 +63,69 @@ app.post('/verify-code', (req, res) => {
 app.post('/submit-form', (req, res) => {
     const data = req.body;
 
-    // طباعة البيانات في التيرمينال بشكل منظم
-    console.log("\n========================================");
-    console.log("📩 وصلت بيانات جديدة الآن:");
-    console.log("========================================");
-    console.log(`👤 الدور: ${data.role}`);
-    console.log(`📝 الاسم: ${data.firstName} ${data.lastName}`);
-    console.log(`🚻 النوع: ${data.gender} | 🎂 العمر: ${data.age}`);
-    console.log(`🌍 الجنسية: ${data.nationality}`);
-    console.log(`📧 الإيميل: ${data.email}`);
-    console.log(`📱 واتساب: ${data.whatsapp}`);
-    console.log(`🏠 بلد الإقامة: ${data.residence}`);
-    
-    if (data.role === 'teacher') {
-        console.log(`🎓 التخصص: ${data.specialty}`);
-        console.log(`👥 الفئات: ${data.categories}`);
-    }
-    console.log("========================================\n");
+    // 1. تجهيز نص الرسالة بشكل منظم (HTML) لكي يظهر في إيميلك
+    const emailBody = `
+        <div dir="rtl" style="font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
+            <h2 style="color: #4f46e5; border-bottom: 2px solid #4f46e5; padding-bottom: 10px;">طلب تسجيل جديد: ${data.role === 'teacher' ? 'معلم' : 'طالب'}</h2>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr style="background: #f9fafb;">
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">الاسم الكامل</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.firstName} ${data.lastName}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">البريد الإلكتروني</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.email}</td>
+                </tr>
+                <tr style="background: #f9fafb;">
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">النوع / العمر</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.gender} / ${data.age} سنة</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">واتساب</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.whatsapp}</td>
+                </tr>
+                <tr style="background: #f9fafb;">
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">بلد الإقامة</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.residence}</td>
+                </tr>
+                ${data.role === 'teacher' ? `
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">التخصص</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.specialty}</td>
+                </tr>
+                <tr style="background: #f9fafb;">
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">الفئات المستهدفة</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.categories}</td>
+                </tr>
+                ` : ''}
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">الساعات المتاحة</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${data.availableHours}</td>
+                </tr>
+            </table>
+            
+            <p style="margin-top: 20px; color: #666; font-size: 12px;">تم إرسال هذا الطلب من موقع Alson الأكاديمي.</p>
+        </div>
+    `;
 
-    // التحويل لصفحة النجاح
-    res.redirect('/success.html');
+    // 2. إعدادات الإيميل الذي سيصلك أنت
+    const adminMailOptions = {
+        from: '"إدارة الموقع" <no-reply@alson.com>',
+        to: process.env.EMAIL_USER, // سيصل الإيميل لنفس إيميلك المسجل في Vercel
+        subject: `🔔 بيانات جديدة: ${data.firstName} (${data.role})`,
+        html: emailBody // نرسل البيانات كـ HTML لتبدو منسقة
+    };
+
+    // 3. تنفيذ الإرسال
+    transporter.sendMail(adminMailOptions, (err, info) => {
+        if (err) {
+            console.log("خطأ في إرسال بيانات الفورم للإيميل:", err);
+            // حتى لو فشل الإرسال للإيميل، سنحول المستخدم لصفحة النجاح (أو يمكنك إظهار رسالة خطأ)
+        }
+        console.log("تم إرسال بيانات الفورم للإيميل بنجاح ✅");
+        res.redirect('/success.html');
+    });
 });
 
 // 6. تشغيل السيرفر
