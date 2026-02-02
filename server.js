@@ -82,7 +82,9 @@ app.post('/submit-form', (req, res) => {
 });
 
 // 6. تشغيل السيرفر
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-    console.log(`Site is ready: Go to http://localhost:3000`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server is running at http://localhost:${PORT}`);
+    });
+}
+module.exports = app;
