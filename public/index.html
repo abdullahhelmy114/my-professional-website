@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إنشاء حساب احترافي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg-dark: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* لمنع التمرير بسبب الأشكال المتحركة */
+            position: relative;
+        }
+
+        /* --- الأشكال المتحركة في الخلفية --- */
+        .bg-shapes {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            filter: blur(80px); /* سر الاحترافية في التغبيش العالي */
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: move 20s infinite alternate;
+        }
+
+        .shape-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -10%; }
+        .shape-2 { width: 350px; height: 350px; background: var(--secondary); bottom: -10%; right: -5%; animation-delay: -5s; }
+        .shape-3 { width: 300px; height: 300px; background: #3b82f6; top: 40%; left: 30%; animation-delay: -10s; }
+
+        @keyframes move {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(100px, 100px) rotate(360deg); }
+        }
+
+        /* --- تأثير الزجاج (Glassmorphism Card) --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05); /* شفافية عالية */
+            backdrop-filter: blur(15px); /* تغبيش المحتوى خلف الكارت */
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            color: white;
+            z-index: 10;
+        }
+
+        h2 { font-weight: 800; margin-bottom: 30px; font-size: 28px; text-align: center; }
+
+        .input-group { margin-bottom: 20px; text-align: right; }
+        
+        .input-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        /* الكابتشا بتصميم عصري */
+        .captcha-box {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0, 0, 0, 0.2); padding: 12px; border-radius: 12px; margin-bottom: 15px;
+        }
+
+        .captcha-text {
+            font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold;
+            letter-spacing: 5px; color: #94a3b8; user-select: none;
+        }
+
+        .refresh-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 20px; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
+
+    </style>
+</head>
+<body>
+
+    <!-- أشكال الخلفية -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- كارت التسجيل -->
+    <div class="glass-card">
+        <form action="/send-verification" method="POST">
+            <h2>إنشاء حساب</h2>
+
+            <div class="input-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" name="email" required placeholder="example@mail.com">
+            </div>
+
+            <div class="input-group">
+                <label>كلمة المرور</label>
+                <input type="password" name="password" required>
+            </div>
+
+            <div class="input-group">
+                <label>تأكيد كلمة المرور</label>
+                <input type="password" name="confirmPassword" required>
+            </div>
+
+            <div class="captcha-box">
+                <span id="captcha-display" class="captcha-text">CODE</span>
+                <button type="button" class="refresh-btn" onclick="generateCaptcha()">🔄</button>
+            </div>
+
+            <div class="input-group">
+                <input type="text" name="userCaptcha" placeholder="أدخل كود التحقق" required>
+            </div>
+
+            <input type="hidden" name="realCaptcha" id="realCaptchaInput">
+
+            <button type="submit" class="submit-btn">إرسال كود التفعيل 📩</button>
+        </form>
+    </div>
+
+    <script>
+        function generateCaptcha() {
+            const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // استبعاد الأحرف المتشابهة مثل 0 و O
+            let captcha = "";
+            for (let i = 0; i < 5; i++) {
+                captcha += chars[Math.floor(Math.random() * chars.length)];
+            }
+            document.getElementById('captcha-display').innerText = captcha;
+            document.getElementById('realCaptchaInput').value = captcha;
+        }
+        window.onload = generateCaptcha;
+    </script>
+</body>
+</html>

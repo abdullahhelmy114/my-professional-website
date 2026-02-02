@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إكمال البيانات | منظومة التدريس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --student-color: #3b82f6;
+            --teacher-color: #10b981;
+            --bg-dark: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* للسماح بالتمرير */
+            padding: 50px 20px;
+            color: white;
+            position: relative;
+        }
+
+        /* الخلفية المتحركة */
+        .bg-shapes {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; filter: blur(80px);
+        }
+        .shape { position: absolute; border-radius: 50%; opacity: 0.4; animation: move 20s infinite alternate; }
+        .shape-1 { width: 500px; height: 500px; background: var(--student-color); top: -10%; left: -10%; }
+        .shape-2 { width: 400px; height: 400px; background: var(--teacher-color); bottom: -10%; right: -5%; }
+
+        @keyframes move { from { transform: translate(0,0); } to { transform: translate(100px, 100px); } }
+
+        /* كارت الفورم الزجاجي */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            width: 850px; /* عرض أكبر ليتناسب مع الخانات */
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* زر التبديل العلوي */
+        .role-selector { display: flex; background: rgba(0, 0, 0, 0.3); padding: 8px; }
+        .role-btn {
+            flex: 1; padding: 18px; border: none; background: transparent;
+            color: #94a3b8; font-family: 'Cairo', sans-serif; font-size: 18px;
+            font-weight: 800; cursor: pointer; transition: 0.4s; border-radius: 15px;
+        }
+        .role-btn.active.student { background: var(--student-color); color: white; }
+        .role-btn.active.teacher { background: var(--teacher-color); color: white; }
+
+        .form-container { padding: 40px; }
+        .section-title {
+            font-size: 18px; font-weight: 700; color: #94a3b8;
+            margin: 25px 0 15px 0; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* نظام الشبكة (خانتين في الصف) */
+        .grid-inputs {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+
+        .input-group { text-align: right; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
+        input, select, textarea {
+            width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+            color: white; font-family: 'Cairo', sans-serif; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--student-color); background: rgba(255,255,255,0.1); }
+
+        /* زر النوع (ذكر/أنثى) المرن */
+        .gender-container {
+            display: flex; gap: 10px; background: rgba(255,255,255,0.05);
+            padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .gender-btn {
+            flex: 1; padding: 8px; border: none; border-radius: 8px;
+            background: transparent; color: #94a3b8; cursor: pointer;
+            font-family: 'Cairo'; font-weight: 600; transition: 0.3s;
+        }
+        .gender-btn.active { background: #6366f1; color: white; }
+
+        .submit-btn {
+            width: 100%; padding: 18px; background: var(--student-color);
+            color: white; border: none; border-radius: 15px; font-size: 18px;
+            font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 40px;
+        }
+        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
+        /* لإخفاء حقول المعلم عند اختيار طالب */
+        .teacher-only { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <div class="glass-card">
+        <div class="role-selector">
+            <button type="button" class="role-btn active student" id="studentBtn" onclick="selectRole('student')">👨‍🎓 طالب</button>
+            <button type="button" class="role-btn teacher" id="teacherBtn" onclick="selectRole('teacher')">👨‍🏫 معلم</button>
+        </div>
+
+        <div class="form-container">
+            <form action="/submit-form" method="POST">
+                <input type="hidden" name="role" id="roleInput" value="student">
+                <input type="hidden" name="gender" id="genderInput" value="ذكر">
+
+                <!-- المجموعة الأولى: البيانات الأساسية -->
+                <div class="section-title">البيانات الشخصية</div>
+                <div class="grid-inputs">
+                    <div class="input-group">
+                        <label>الاسم الأول *</label>
+                        <input type="text" name="firstName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>الاسم الأخير *</label>
+                        <input type="text" name="lastName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>النوع *</label>
+                        <div class="gender-container">
+                            <button type="button" class="gender-btn active" id="maleBtn" onclick="setGender('ذكر')">ذكر</button>
+                            <button type="button" class="gender-btn" id="femaleBtn" onclick="setGender('أنثى')">أنثى</button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>العمر *</label>
+                        <input type="number" name="age" required>
+                    </div>
+                    <div class="input-group">
+                        <label>الجنسية *</label>
+                        <input type="text" name="nationality" required>
+                    </div>
+                    <div class="input-group">
+                        <label>الديانة *</label>
+                        <input type="text" name="religion" required>
+                    </div>
+                </div>
+
+                <!-- المجموعة الثانية: التواصل والإقامة -->
+                <div class="section-title">معلومات التواصل والإقامة</div>
+                <div class="grid-inputs">
+                    <div class="input-group">
+                        <label>البريد الإلكتروني *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label>رقم واتساب *</label>
+                        <input type="tel" name="whatsapp" placeholder="+20..." required>
+                    </div>
+                    <div class="input-group">
+                        <label>حساب تيليجرام *</label>
+                        <input type="text" name="telegram" required>
+                    </div>
+                    <div class="input-group">
+                        <label>البلد الذي تقيم فيه حالياً *</label>
+                        <input type="text" name="residence" required>
+                    </div>
+                </div>
+
+                <!-- المجموعة الثالثة: اللغات والتعليم -->
+                <div class="section-title">اللغات والتعليم</div>
+                <div class="grid-inputs">
+                    <div class="input-group">
+                        <label>اللغة الأم *</label>
+                        <input type="text" name="motherTongue" required>
+                    </div>
+                    <div class="input-group">
+                        <label>لغات أخرى تجيدها (اختياري)</label>
+                        <input type="text" name="otherLanguages">
+                    </div>
+                    
+                    <!-- حقول خاصة بالمعلم فقط -->
+                    <div class="input-group teacher-only">
+                        <label>التخصص / اللغة التي ترغب في تدريسها *</label>
+                        <input type="text" name="specialty" id="specialtyInput">
+                    </div>
+                    <div class="input-group teacher-only">
+                        <label>الفئات التي تقوم بتدريسها *</label>
+                        <input type="text" name="categories" id="categoriesInput" placeholder="مثلاً: أطفال، كبار، مبتدئين">
+                    </div>
+
+                    <div class="input-group">
+                        <label id="hoursLabel">الساعات المتاحة للتعلم *</label>
+                        <input type="text" name="availableHours" placeholder="مثلاً: من 4م إلى 8م" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">حفظ وإرسال الطلب ✨</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            const studentBtn = document.getElementById('studentBtn');
+            const teacherBtn = document.getElementById('teacherBtn');
+            const roleInput = document.getElementById('roleInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const hoursLabel = document.getElementById('hoursLabel');
+            const teacherFields = document.querySelectorAll('.teacher-only');
+            
+            const specialtyInput = document.getElementById('specialtyInput');
+            const categoriesInput = document.getElementById('categoriesInput');
+
+            roleInput.value = role;
+
+            if (role === 'student') {
+                studentBtn.classList.add('active');
+                teacherBtn.classList.remove('active');
+                submitBtn.style.background = "var(--student-color)";
+                hoursLabel.innerText = "الساعات المتاحة للتعلم *";
+                teacherFields.forEach(el => el.style.display = 'none');
+                specialtyInput.required = false;
+                categoriesInput.required = false;
+            } else {
+                teacherBtn.classList.add('active');
+                studentBtn.classList.remove('active');
+                submitBtn.style.background = "var(--teacher-color)";
+                hoursLabel.innerText = "الساعات المتاحة للتدريس *";
+                teacherFields.forEach(el => el.style.display = 'block');
+                specialtyInput.required = true;
+                categoriesInput.required = true;
+            }
+        }
+
+        function setGender(gender) {
+            document.getElementById('genderInput').value = gender;
+            document.getElementById('maleBtn').classList.toggle('active', gender === 'ذكر');
+            document.getElementById('femaleBtn').classList.toggle('active', gender === 'أنثى');
+        }
+    </script>
+</body>
+</html>
