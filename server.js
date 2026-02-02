@@ -11,10 +11,10 @@ app.use(express.static('public'));
 // 2. إعدادات الإيميل (ضع بياناتك الحقيقية هنا)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: {
-        user: 'alsonakademy.32@gmail.com', // إيميلك
-        pass: 'rpij bdpd kgmi xsuz'     // الـ 16 حرف
-    }
+auth: {
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS
+}
 });
 
 let tempStorage = { email: "", code: "" };
